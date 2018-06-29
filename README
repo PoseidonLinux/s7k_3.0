@@ -1,2 +1,13 @@
-# s7k_3.0
-MB-System I/O module to support Reson s7k 3.0 (main focus Atlas Hydrosweep DS3 and Norbit)
+# S7K_3.0 I/O module for MB-System
+
+
+This file contains general information regarding the MB-System I/O module 
+to support Reson s7k 3.0 (main focus Atlas Hydrosweep DS3 and Norbit).
+This file is located at the top of the MB-System source code distribution
+directory structure.
+
+The copyright and licensing terms are contained in the file "COPYING".
+The GNU GPL version 3 license used for MB-System can be found in the file "GPL".
+The software authors are listed in the file "AUTHORS".
+A log of source code changes is in the file "CHANGELOG".
+Installation instructions are found in the file "NOTES".
