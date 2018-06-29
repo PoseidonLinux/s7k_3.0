@@ -1,0 +1,63 @@
+Reson S7K - mbsys_reson7k3.h
+
+0) All record names changed to reflect only version 3 of the S7K format.
+
+1) Updated the Record ID Definitions to reflect only version 3.
+
+2) Version 2 tags (V2) were removed from names of identifier as the I/O is not backwards compatible and supports only version 3.
+
+3) Definitions that no longer appear in version 3 of the S7K format and got removed:
+
+/* 11000-11199 reserved for Payload Controller command records */
+#define R7KHDRSIZE_7kPayloadControllerCommand 16
+#define R7KHDRSIZE_7kPayloadControllerCommandAcknowledge 12
+#define R7KHDRSIZE_7kPayloadControllerStatus 16
+
+/* Edgetech trace data format definitions */
+#define EDGETECH_TRACEFORMAT_ENVELOPE 0     /* 2 bytes/sample (unsigned) */
+#define EDGETECH_TRACEFORMAT_ANALYTIC 1     /* 4 bytes/sample (I + Q) */
+#define EDGETECH_TRACEFORMAT_RAW 2          /* 2 bytes/sample (signed) */
+#define EDGETECH_TRACEFORMAT_REALANALYTIC 3 /* 2 bytes/sample (signed) */
+#define EDGETECH_TRACEFORMAT_PIXEL 4        /* 2 bytes/sample (signed) */
+
+4) Position (1003) header size changed from 36 to 37 bytes, but last byte is optional (number of satellites).
+
+5) Survey Line (1014) header size changed from 16 to 72.
+
+6) Added record size for data in Custom Attitude Information of 4 bytes.
+
+#define R7KRDTSIZE_CustomAttitude 4
+
+7) MatchFilter (7002) header size changed from 24 to 88.
+
+8) ImageData (7011) header size changed from 20 to 56.
+
+9) PingMotionData (7012) header size changed from 20 to 56.
+
+10) DetectionSetup (7017) renamed to DetectionDataSetup.
+
+11) BITERecordData (7021) header size changed from 136 to 130.
+
+12) 7KCenterVersion (7022) renamed to SonarSourceVersion.
+
+13) RawDetection (7027) renamed to RawDetectionData.
+
+14) FileHeader (7200) header was split by Dave into 2 parts, a header (44 bytes) and data (272 bytes). Question is why? I don't know but there is already a data record.
+
+15) Record 1003 also can use latitude and longitude in meters!
+
+16) Record 1003 is not using optinal record "Number of Satellites".
+
+17) Record 1005 also can use latitude and longitude in meters!
+
+18) Record 1011 has now x, y, z rotations in radians instead of degrees.
+
+19) I believe "Processed Sidescan" should be removed.
+
+Reson S7K - mbsys_reson7k3.c
+
+1) Removed memory allocation sections for old Record Type Definitons not supported by version.
+
+Record 3000 & 3000 (for Edgetech sidescan)
+Record 3001 (Edgetech subbottom)
+Record 3100 (Bluefin)
