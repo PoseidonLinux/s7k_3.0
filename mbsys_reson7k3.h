@@ -1798,29 +1798,115 @@ typedef struct s7kr_compressedbeamformedmagnitude_struct {
 /* Reson 7k Compressed Water Column Data (Record 7042) */
 typedef struct s7kr_compressedwatercolumn_struct {
 	s7k_header header;
-	u64 serial_number; /* Sonar serial number */
-	u32 ping_number;   /* Sequential number */
-	u16 multi_ping;    /* Flag to indicate multi-ping mode
-	                         0 = no multi-ping
-	                        >0 = sequence number of ping in the multi-ping sequence */
-	u16 number_beams;  /* Total number of beams in ping record */
+	u16 beam_number;    /* Beam Number for this data. */
+	u8 segment_number;  /* Segment number for this beam. Optional field, see ‘Bit 14’ of Flags. */
+	u32 samples;        /* Number of samples included for this beam. */
+	u32 nalloc;         /* Bytes allocated to hold the time series */
+	u64 *sample;        /* Each “Sample” may be one of the following, depending on the Flags bits:
+	                       A) 16 bit Mag & 16bit Phase (32 bits total)
+	                       B) 16 bit Mag (16 bits total, no phase)
+	                       C) 8 bit Mag & 8 bit Phase (16 bits total)
+	                       D) 8 bit Mag (8 bits total, no phase)
+	                       E) 32 bit Mag & 8 bit Phase(40 bits total)
+	                       F) 32 bit Mag(32 bits total, no phase) */
+} s7kr_compressedwatercolumndata;
+
+/* Reson 7k Compressed Water Column Data (Record 7042) */
+typedef struct s7kr_compressedwatercolumn_struct {
+	s7k_header header;
+	u64 serial_number;       /* Sonar serial number */
+	u32 ping_number;         /* Sequential number */
+	u16 multi_ping;          /* Flag to indicate multi-ping mode
+	                            0 = no multi-ping
+	                           >0 = sequence number of ping in the multi-ping sequence */
+	u16 number_beams;        /* Total number of beams in ping record */
+	u32 samples;             /*  */
+	u32 compressed-samples;  /* Number of samples (maximum over all beams if Flags bit 0 set 
+	                            [samples per beam varies]. Otherwise same as Samples(N) )
+	                            When all beams come with the same number of samples 
+	                            'Compressed Samples' is the same as 'Samples(N)' for each 
+	                            beam in the data section of the record. But if bit 0 
+	                            is set in the 'Flags' the beams are individually cut based 
+	                            on bottom detection and thus have all different length. 
+	                            'Compressed Samples' then gives you the maximum number of 
+	                            samples of the beam with the longest range. 
+	                            Same as the largest value of 'Samples(N)' in the data 
+	                            section. */
+	u32 flags;               /* Bit field:
+	                            Bit 0 : Use maximum bottom detection point in each beam to 
+	                            limit data. Data is included up to the bottom detection 
+	                            point + 10%. This flag has no effect on systems which 
+	                            do not perform bottom detection.
+	                            Bit 1 : Include magnitude data only (strip phase)
+	                            Bit 2 : Convert mag to dB, then compress from 16 bit to 
+	                            8 bit by truncation of 8 lower bits. Phase compression simply 
+	                            truncates lower (least significant) byte of phase data.
+	                            Bit 3 : Reserved.
+	                            Bit 4-7 : Downsampling divisor. Value = (BITS >> 4). Only 
+	                            values 2-16 are valid. This field is ignored if downsampling 
+	                            is not enabled (type = “none”).
+	                            Bit 8-11 : Downsampling type: 
+	                              0x000 = None
+	                              0x100 = Middle value 
+	                              0x200 = Peal value
+	                              0x300 = Average value 
+	                            Bit 12 : 32 Bits data 
+	                            Bit 13 : Compression factor available
+	                            Bit 14 : Segment numbers available 
+	                            Bit 15 : First sample contains RxDelay value. */
+	u32 first_sample;        /* First sample included for each beam. Normally zero, 
+	                            unless power saving mode “Range Blank” or absolute gate 
+	                            (bit 3) is in effect. See RC 1046 for details. Thus, 
+	                            the samples in each beam data section will run from F 
+	                            to F+N-1. Construction of a correct water column image 
+	                            must take this into account. */
+	f32 sample_rate;         /* Effective sample rate after downsampling, if specified. */
+	f32 compression_factor;  /* Factor used in magnitude compression. */
+	u32 reserved;            /* Zero. Reserved for future use. */
+	s7k_compressedwatercolumndata compressedwatercolumndata
 } s7kr_compressedwatercolumn;
+
+/* Reson 7k Segmented Raw Detection Data (Record 7047) */
+typedef struct s7kr_segmentedrawdetectiondata_struct {
+	s7k_header header;
+	
+} s7kr_segmentedrawdetectiondata;
 
 /* Reson 7k Segmented Raw Detection Data (Record 7047) */
 typedef struct s7kr_segmentedrawdetection_struct {
 	s7k_header header;
-
+	
+	s7k_segmentedrawdetectiondata segmentedrawdetectiondata;
 } s7kr_segmentedrawdetection;
 
 /* Reson 7k Calibrated Beam Data (Record 7048) */
 typedef struct s7kr_calibratedbeamdata_struct {
 	s7k_header header;
-	u64 serial_number; /* Sonar serial number */
-	u32 ping_number;   /* Sequential number */
-	u16 multi_ping;    /* Flag to indicate multi-ping mode
-	                         0 = no multi-ping
-	                        >0 = sequence number of ping in the multi-ping sequence */
-	u16 first_beam;  /* Total number of beams in ping record */
+	u64 serial_number;        /* Sonar serial number */
+	u32 ping_number;          /* Sequential number */
+	u16 multi_ping;           /* Flag to indicate multi-ping mode
+	                             0 = no multi-ping
+	                            >0 = sequence number of ping in the multi-ping sequence */
+	u16 first_beam;           /* Total number of beams in ping record */
+	u16 total_beams;          /* Total number of beams in ping record */
+	u32 total_samples;        /* Total number of samples in ping record */
+	u8 foward_looking_sonar;  /* FLS flag */
+	u8 error_flag;            /* If set, record contains original non-calibrated beamformed
+	                             data. Flag itself will indicate an error.
+	                             0 - OK
+	                             1 - No calibration
+	                             2 - TVG read error (R7010)
+	                             3 - CTD not available (R1010)
+	                             4 - Invalid or not available geometry (R7004)
+	                             5 - Invalid sonar specifications (XML)
+	                             6 - Bottom detection failed
+	                             7 - No power (Power is set to zero)
+	                             8 - No gain (Gain is too low)
+	                             128-254 - Reserved for internal errors
+	                             255 - System cannot be calibrated (c7k file missing) */
+	u32 reserved[8];          /* Reserved for future use */
+	f32 *sample;              /* Amplitude series for each beam. First sample represents
+	                             range 0 meters */
 } s7kr_calibratedbeamdata;
 
 /* Reson 7k System Events (Record 7050) */
@@ -1832,7 +1918,7 @@ typedef struct s7kr_systemeventsdata_struct {
 	u16 system_enum;
 	u16 event_message_length
 	s7k_7ktime 7ktime;
-	u8 
+	u8 event_message;
 } s7kr_systemeventsdata;
 
 /* Reson 7k System Events (Record 7050) */
@@ -3093,46 +3179,67 @@ int mbsys_reson7k_print_heading(int verbose, s7kr_heading *heading, int *error);
 int mbsys_reson7k_print_surveyline(int verbose, s7kr_surveyline *surveyline, int *error);
 int mbsys_reson7k_print_navigation(int verbose, s7kr_navigation *navigation, int *error);
 int mbsys_reson7k_print_attitude(int verbose, s7kr_attitude *attitude, int *error);
-int mbsys_reson7k_print_rec1022(int verbose, s7kr_rec1022 *rec1022, int *error);
-int mbsys_reson7k_print_fsdwchannel(int verbose, int data_format, s7k_fsdwchannel *fsdwchannel, int *error);
-int mbsys_reson7k_print_fsdwssheader(int verbose, s7k_fsdwssheader *fsdwssheader, int *error);
-int mbsys_reson7k_print_fsdwsegyheader(int verbose, s7k_fsdwsegyheader *fsdwsegyheader, int *error);
-int mbsys_reson7k_print_fsdwss(int verbose, s7kr_fsdwss *fsdwss, int *error);
-int mbsys_reson7k_print_fsdwsb(int verbose, s7kr_fsdwsb *fsdwsb, int *error);
-int mbsys_reson7k_print_bluefin(int verbose, s7kr_bluefin *bluefin, int *error);
-int mbsys_reson7k_print_processedsidescan(int verbose, s7kr_processedsidescan *processedsidescan, int *error);
+int mbsys_reson7k_print_pantilt(int verbose, s7kr_pantilt *pantilt, int *error);
+int mbsys_reson7k_print_sonarinstallationids(int verbose, s7kr_sonarinstallationids *sonarinstallationids, int *error);
+int mbsys_reson7k_print_pantilt(int verbose, s7kr_sonarpipeenvironment *sonarpipeenvironment, int *error);
+int mbsys_reson7k_print_contactoutput(int verbose, s7kr_contactoutput *contactoutput, int *error);
 int mbsys_reson7k_print_volatilesettings(int verbose, s7kr_volatilesettings *volatilesettings, int *error);
 int mbsys_reson7k_print_device(int verbose, s7k_device *device, int *error);
 int mbsys_reson7k_print_configuration(int verbose, s7kr_configuration *configuration, int *error);
 int mbsys_reson7k_print_matchfilter(int verbose, s7kr_matchfilter *matchfilter, int *error);
-int mbsys_reson7k_print_v2firmwarehardwareconfiguration(int verbose,
-                                                        s7kr_v2firmwarehardwareconfiguration *v2firmwarehardwareconfiguration,
+int mbsys_reson7k_print_firmwarehardwareconfiguration(int verbose,
+                                                        s7kr_firmwarehardwareconfiguration *firmwarehardwareconfiguration,
                                                         int *error);
 int mbsys_reson7k_print_beamgeometry(int verbose, s7kr_beamgeometry *beamgeometry, int *error);
-int mbsys_reson7k_print_calibration(int verbose, s7kr_calibration *calibration, int *error);
 int mbsys_reson7k_print_bathymetry(int verbose, s7kr_bathymetry *bathymetry, int *error);
-int mbsys_reson7k_print_backscatter(int verbose, s7kr_backscatter *backscatter, int *error);
-int mbsys_reson7k_print_beam(int verbose, s7kr_beam *beam, int *error);
-int mbsys_reson7k_print_verticaldepth(int verbose, s7kr_verticaldepth *verticaldepth, int *error);
+int mbsys_reson7k_print_sidescandata(int verbose, s7kr_sidescandata *sidescandata, int *error);
+int mbsys_reson7k_print_watercolumndata(int verbose, s7kr_watercolumndata *watercolumndata, int *error);
 int mbsys_reson7k_print_tvg(int verbose, s7kr_tvg *tvg, int *error);
-int mbsys_reson7k_print_image(int verbose, s7kr_image *image, int *error);
-int mbsys_reson7k_print_v2pingmotion(int verbose, s7kr_v2pingmotion *v2pingmotion, int *error);
-int mbsys_reson7k_print_v2detectionsetup(int verbose, s7kr_v2detectionsetup *v2detectionsetup, int *error);
-int mbsys_reson7k_print_v2beamformed(int verbose, s7kr_v2beamformed *v2beamformed, int *error);
-int mbsys_reson7k_print_v2bite(int verbose, s7kr_v2bite *v2bite, int *error);
-int mbsys_reson7k_print_v27kcenterversion(int verbose, s7kr_v27kcenterversion *v27kcenterversion, int *error);
-int mbsys_reson7k_print_v28kwetendversion(int verbose, s7kr_v28kwetendversion *v28kwetendversion, int *error);
-int mbsys_reson7k_print_v2detection(int verbose, s7kr_v2detection *v2detection, int *error);
-int mbsys_reson7k_print_v2rawdetection(int verbose, s7kr_v2rawdetection *v2rawdetection, int *error);
-int mbsys_reson7k_print_v2snippet(int verbose, s7kr_v2snippet *v2snippet, int *error);
-
+int mbsys_reson7k_print_imagedata(int verbose, s7kr_imagedata *imagedata, int *error);
+int mbsys_reson7k_print_pingmotiondata(int verbose, s7kr_pingmotiondata *pingmotiondata, int *error);
+int mbsys_reson7k_print_adaptivegate(int verbose, s7kr_adaptivegate *adaptivegate, int *error);
+int mbsys_reson7k_print_detectionsetup(int verbose, s7kr_detectionsetup *detectionsetup, int *error);
+int mbsys_reson7k_print_amplitudephase(int verbose, s7kr_amplitudephase *amplitudephase, int *error);
+int mbsys_reson7k_print_beamformeddata(int verbose, s7kr_beamformeddata *beamformeddata, int *error);
+int mbsys_reson7k_print_anglemagnitude(int verbose, s7kr_anglemagnitude *anglemagnitude, int *error);
+int mbsys_reson7k_print_vernierprocessingdataraw(int verbose, 
+                                                        s7kr_vernierprocessingdataraw *vernierprocessingdataraw, 
+                                                        int *error);
+int mbsys_reson7k_print_bitefield(int verbose, s7kr_bitefield *bitefield, int *error);
+int mbsys_reson7k_print_bitereport(int verbose, s7kr_bitereport *bitereport, int *error);
+int mbsys_reson7k_print_bitedata(int verbose, s7kr_bitedata *bitedata, int *error);
+int mbsys_reson7k_print_7ksonarsourceversion(int verbose, s7kr_7ksonarsourceversion *7ksonarsourceversion, 
+                                                        int *error);
+int mbsys_reson7k_print_8kwetendversion(int verbose, s7kr_8kwetendversion *8kwetendversion, int *error);
+int mbsys_reson7k_print_rawdetection(int verbose, s7kr_rawdetection *rawdetection, int *error);
+int mbsys_reson7k_print_snippetdata(int verbose, s7kr_snippetdata *snippetdata, int *error);
 int mbsys_reson7k_print_calibratedsnippet(int verbose, s7kr_calibratedsnippet *calsnippet, int *error);
 
+int mbsys_reson7k_print_tvg(int verbose, s7kr_tvg *tvg, int *error);
+int mbsys_reson7k_print_tvg(int verbose, s7kr_tvg *tvg, int *error);
+int mbsys_reson7k_print_tvg(int verbose, s7kr_tvg *tvg, int *error);
+
+int mbsys_reson7k_print_snippetbackscatteringstrength(int verbose, 
+                                                     s7kr_snippetbackscatteringstrength *snippetbackscatteringstrength, 
+                                                     int *error);
+int mbsys_reson7k_print_mb2status(int verbose, s7kr_mb2status *mb2status, int *error);
+int mbsys_reson7k_print_subsystem(int verbose, s7kr_subsystem *subsystem, int *error);
+int mbsys_reson7k_print_fileheader(int verbose, s7kr_fileheader *fileheader, int *error);
+int mbsys_reson7k_print_filecatalogrecorddata(int verbose, s7kr_filecatalogrecorddata *filecatalogrecorddata, 
+                                                     int *error);
+int mbsys_reson7k_print_filecatalogrecord(int verbose, s7kr_filecatalogrecord *filecatalogrecord, int *error);
+int mbsys_reson7k_print_timemessage(int verbose, s7kr_timemessage *timemessage, int *error);
 int mbsys_reson7k_print_remotecontrol(int verbose, s7kr_remotecontrol *remotecontrol, int *error);
-int mbsys_reson7k_print_remotecontrolacknowledge(int verbose, s7kr_remotecontrolacknowledge *remotecontrolacknowledge, int *error);
-int mbsys_reson7k_print_remotecontrolnotacknowledge(int verbose, s7kr_remotecontrolnotacknowledge *remotecontrolnotacknowledge, int *error);
-int mbsys_reson7k_print_remotecontrolsonarsettings(int verbose, s7kr_remotecontrolsonarsettings *remotecontrolsonarsettings, int *error);
-int mbsys_reson7k_print_commonsystemsettings(int verbose, s7kr_commonsystemsettings *commonsystemsettings, int *error);
+int mbsys_reson7k_print_remotecontrolacknowledge(int verbose, 
+                                                     s7kr_remotecontrolacknowledge *remotecontrolacknowledge, 
+                                                     int *error);
+int mbsys_reson7k_print_remotecontrolnotacknowledge(int verbose, 
+                                                     s7kr_remotecontrolnotacknowledge *remotecontrolnotacknowledge, 
+                                                     int *error);
+int mbsys_reson7k_print_remotecontrolsettings(int verbose, s7kr_remotecontrolsettings *remotecontrolsettings, 
+                                                     int *error);
+int mbsys_reson7k_print_commonsystemsettings(int verbose, s7kr_commonsystemsettings *commonsystemsettings, 
+                                                    int *error);
 int mbsys_reson7k_print_svfiltering(int verbose, s7kr_svfiltering *svfiltering, int *error);
 int mbsys_reson7k_print_systemlockstatus(int verbose, s7kr_systemlockstatus *systemlockstatus, int *error);
 int mbsys_reson7k_print_soundvelocity(int verbose, s7kr_soundvelocity *soundvelocity, int *error);
