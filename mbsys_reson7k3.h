@@ -1410,7 +1410,7 @@ typedef struct s7kr_beamformeddata_struct {
 	u16 beams_number;    /* Total number of beams or elements in record */
 	u32 n;               /* Number of samples in each beam in this record */
 	u32 reserved[8];     /* Reserved for future use */
-	s7kr_amplitudephase amplitudephase[MBSYS_RESON7K_MAX_BEAMS];
+	s7k_amplitudephase amplitudephase[MBSYS_RESON7K_MAX_BEAMS];
 	                     /* amplitude and phase data for each beam */
 } s7kr_beamformeddata;
 
@@ -1463,7 +1463,7 @@ typedef struct s7kr_vernierprocessingdataraw_struct {
 	                            normally -45 degrees (in radians) */
 	f32 elevation_coverage;  /* Normally 90 degrees (in radians) */
 	u32 reserved[4];         /* Reserved */
-	s7kr_anglemagnitude anglemagnitude[MBSYS_RESON7K_MAX_BEAMS];
+	s7k_anglemagnitude anglemagnitude[MBSYS_RESON7K_MAX_BEAMS];
 	                         /* Angle and magnitude data for each beam plus 
 	                            additional records */
 } s7kr_vernierprocessingdataraw;
@@ -1535,7 +1535,7 @@ typedef struct s7kr_bitereport_struct {
 	                                    Bit 1:
 	                                    0 = BITE field #255 within range
 	                                    1 = BITE field #255 out of range */
-	s7kr_bitefield bitefield[256];   /* Array of BITE field data */
+	s7k_bitefield bitefield[256];    /* Array of BITE field data */
 } s7kr_bitereport;
 
 /* Reson 7k BITE (record 7021) */
@@ -1628,7 +1628,7 @@ typedef struct s7kr_rawdetection_struct {
 	f32 applied_roll;         /* Roll value (in radians) applied to gates; 
 	                             zero if roll stabilization is ON. */
 	u32 reserved[15];         /* Reserved */
-	s7kr_rawdetectiondata rawdetectiondata[MBSYS_RESON7K_MAX_BEAMS];
+	s7k_rawdetectiondata rawdetectiondata[MBSYS_RESON7K_MAX_BEAMS];
 } s7kr_rawdetection;
 
 /* Reson 7k snippet data (part of record 7028) */
@@ -1666,7 +1666,7 @@ typedef struct s7kr_snippetdata_struct {
 	                         Bit 0: 0 = 16 bit snippets
 	                         1 = 32 bit snippets */
 	u32 reserved[6];    /* Reserved for future use */
-	s7kr_snippettimeseries snippettimeseries[MBSYS_RESON7K_MAX_BEAMS];
+	s7k_snippettimeseries snippettimeseries[MBSYS_RESON7K_MAX_BEAMS];
 	/* Snippet time series for each beam */
 } s7kr_snippetdata;
 
@@ -1693,7 +1693,7 @@ typedef struct s7kr_vernierprocessingdatafiltered_struct {
 	f32 min_angle;        /* Minimum elevation angle in all soundings (radians) */
 	f32 max_angle;        /* Maximum elevation angle in all soundings (radians) */
 	u16 repeat_size;      /* Size of sounding repeat blocks following (bytes) */
-	s7kr_vernierprocessingdatasoundings vernierprocessingdatasoundings[MBSYS_RESON7K_MAX_BEAMS]
+	s7k_vernierprocessingdatasoundings vernierprocessingdatasoundings[MBSYS_RESON7K_MAX_BEAMS]
 } s7kr_vernierprocessingdatafiltered;
 
 /* Reson 7k sonar installation parameters (record 7030) */
@@ -1792,7 +1792,7 @@ typedef struct s7kr_compressedbeamformedmagnitude_struct {
 	                         Bit 9-15: Reserved */
 	f32 sample_rate;   /* Sampling rate for the data */
 	u32 reserved;      /* Reserved */
-	s7kr_beamformedmagnitude beamformedmagnitude[MBSYS_RESON7K_MAX_BEAMS];
+	s7k_beamformedmagnitude beamformedmagnitude[MBSYS_RESON7K_MAX_BEAMS];
 } s7kr_compressedbeamformedmagnitude;
 
 /* Reson 7k Compressed Water Column Data (Record 7042) */
@@ -1824,9 +1824,23 @@ typedef struct s7kr_calibratedbeamdata_struct {
 } s7kr_calibratedbeamdata;
 
 /* Reson 7k System Events (Record 7050) */
+typedef struct s7kr_systemeventsdata_struct {
+	s7k_header header;
+	u16 event_type;
+	u16 event_id;
+	u32 device_id;
+	u16 system_enum;
+	u16 event_message_length
+	s7k_7ktime 7ktime;
+	u8 
+} s7kr_systemeventsdata;
+
+/* Reson 7k System Events (Record 7050) */
 typedef struct s7kr_systemevents_struct {
 	s7k_header header;
-
+	u64 serial_number;
+	u32 number_events;
+	s7k_systemeventsdata systemeventsdata;
 } s7kr_systemevents;
 
 /* Reson 7k System Event Message (record 7051) */
@@ -1848,30 +1862,38 @@ typedef struct s7kr_systemeventmessage_struct {
 /* Reson 7k RDR Recording Status (part of Record 7052) */
 typedef struct s7kr_rdrrecordingstatusdata_struct {
 	s7k_header header;
-	u32
-	u32
-	u32
-	u32
-	u32
-	u32
-	u32
-	u32
-	u32
-	u32
+	u32 threshold_length;
+	u32 threshold_value_array;
+	u32 included_records;
+	u32 included_records_array;
+	u32 excluded_records;
+	u32 excluded_records_array;
+	u32 included_devices;
+	u32 included_devices_array;
+	u32 excluded_devices;
+	u32 excluded_devices_array;
 } s7kr_rdrrecordingstatus;
 
 /* Reson 7k RDR Recording Status (Record 7052) */
 typedef struct s7kr_rdrrecordingstatus_struct {
 	s7k_header header;
-	u32 position;            /*  */
-	u8 disk_free;            /*  */
-	u8 mode;                 /*  */
-	u32 filerecords;         /*  */
-	u64 filesize;            /*  */
-	u8 first_7ktime[10];     /*  */
-	u8 last_7ktime[10];      /*  */
-	u32 totaltime;           /*  */
-	c8 directory_name[256];  /*  */
+	u32 position;            /* Seconds since start of recording */
+	u8 disk_free;            /* Percentage of disk space free (0 - 100) */
+	u8 mode;                 /* Bit field:
+	                            Bit 0-5:
+	                            0 - Stopped
+	                            1 - Recording
+	                            2 - Playing
+	                            3 - Deleting
+	                            4 - Stopping
+	                            5+ - Reserved */
+	u32 filerecords;         /* Total number of records in file at the time the request
+	                            is processed */
+	u64 filesize;            /* File size in bytes */
+	u8 first_7ktime[10];     /* Time tag first record time */
+	u8 last_7ktime[10];      /* Time tag last record time */
+	u32 totaltime;           /* Time span between first and last record (in seconds) */
+	c8 directory_name[256];  /* Current directory name. Null-terminated ASCII string */
 	c8 filename[256];        /* Current file name. Null-terminated ASCII string */
 	u32 error;               /* Error code */
 	u32 flags;               /* Bit 0: External logger supported
@@ -1886,7 +1908,7 @@ typedef struct s7kr_rdrrecordingstatus_struct {
 	                            Non-zero = write 10 sec of lead-in ping data */
 	u16 reserved;            /* Reserved */
 	u32 reserved[4];         /* Reserved */
-	s7kr_rdrrecordingstatusdata rdrrecordingstatusdata;
+	s7k_rdrrecordingstatusdata rdrrecordingstatusdata;
 } s7kr_rdrrecordingstatus;
 
 /* Reson 7k Subscriptions (part of Record 7053) */
@@ -1904,7 +1926,7 @@ typedef struct s7kr_subscriptionsdata_struct {
 typedef struct s7kr_subscriptions_struct {
 	s7k_header header;
 	i32 subscriptions; /* Number of subscriptions */
-	s7kr_subscriptionsdata subscriptionsdata;
+	s7k_subscriptionsdata subscriptionsdata;
 } s7kr_subscriptions;
 
 /* Reson 7k System Events (Record 7054) */
@@ -2015,6 +2037,7 @@ typedef struct s7kr_calibratedsidescan_struct {
 	                          8 = No gain (Gain is too low)
 	                          128-254 = Reserved for internal errors
 	                          255 = System cannot be calibrated (c7k file missing) */
+	s7k_calibratedsidescanseries calibratedsidescanseries;
 } s7kr_calibratedsidescan;
 
 /* Reson 7k Snippet Backscattering Strength (part of Record 7058) */
@@ -2066,8 +2089,8 @@ typedef struct s7kr_snippetbackscatteringstrength_struct {
 	f32 absorption;     /* Absorption value in dB/km. Only valid when 
 	                       control flag bit 8 is set */
 	u32 reserved[6];  /* Reserved for future use */
-	s7kr_snippetbackscatteringstrengthdata 
-	                     s7kr_snippetbackscatteringstrengthdata[MBSYS_RESON7K_MAX_BEAMS];
+	s7k_snippetbackscatteringstrengthdata 
+	                     snippetbackscatteringstrengthdata[MBSYS_RESON7K_MAX_BEAMS];
 	/* Snippet time series for each beam */
 } s7kr_snippetbackscatteringstrength;
 
@@ -2236,7 +2259,7 @@ typedef struct s7kr_fileheader_struct {
 	c8 recording_version[16];  /* Recording program version number - null terminated string */
 	c8 user_defined_name[64];  /* User defined name - null terminated string */
 	c8 notes[128];             /* Notes - null terminated string */
-	s7kr_subsystem subsystem[MBSYS_RESON7K_MAX_DEVICE];
+	s7k_subsystem subsystem[MBSYS_RESON7K_MAX_DEVICE];
 } s7kr_fileheader;
 
 /* Reson 7k File Catalog Record (part of Record 7300) */
@@ -2260,7 +2283,7 @@ typedef struct s7kr_filecatalogrecord_struct {
 	u16 version;         /* 1 */
 	u32 records_n;       /* Number of records in the file */
 	u32 reserved;        /* Reserved */
-	s7kr_filecatalogrecorddata filecatalogrecorddata;
+	s7k_filecatalogrecorddata filecatalogrecorddata;
 } s7kr_filecatalogrecord;
 
 /* Reson 7k Time Message (Record 7400) */
