@@ -102,8 +102,8 @@
 #define R7KRECID_SurveyLine 1014
 #define R7KRECID_Navigation 1015
 #define R7KRECID_Attitude 1016
-#define R7KDEVID_PanTilt 1017
-#define R7KDEVID_SonarInstallationIDs 1020
+#define R7KRECID_PanTilt 1017
+#define R7KRECID_SonarInstallationIDs 1020
 
 /* 2000-2999 reserved for user defined records */
 #define R7KRECID_SonarPipeEnvironment 2004
@@ -117,28 +117,28 @@
 #define R7KRECID_7kMatchFilter 7002
 #define R7KRECID_7kFirmwareHardwareConfiguration 7003
 #define R7KRECID_7kBeamGeometry 7004
-#define R7KRECID_7kBathymetricData 7006
-#define R7KRECID_7kSideScanData 7007
-#define R7KRECID_7kWaterColumnData 7008
+#define R7KRECID_7kBathymetry 7006
+#define R7KRECID_7kSideScan 7007
+#define R7KRECID_7kWaterColumn 7008
 #define R7KRECID_7kTVG 7010
-#define R7KRECID_7kImageData 7011
-#define R7KRECID_7kPingMotionData 7012
-#define R7KDEVID_7kAdaptiveGate 7014
+#define R7KRECID_7kImage 7011
+#define R7KRECID_7kPingMotion 7012
+#define R7KRECID_7kAdaptiveGate 7014
 #define R7KRECID_7kDetectionDataSetup 7017
-#define R7KRECID_7kBeamformedData 7018
+#define R7KRECID_7kBeamformed 7018
 #define R7KRECID_7kVernierProcessingDataRaw 7019
-#define R7KRECID_7kBITEData 7021
-#define R7KRECID_7kSonarSourceVersion 7022
-#define R7KRECID_7k8kWetEndVersion 7023
-#define R7KRECID_7kRawDetectionData 7027
-#define R7KRECID_7kSnippetData 7028
+#define R7KRECID_7kBITE 7021
+#define R7KRECID_7kV37KSonarSourceVersion 7022
+#define R7KRECID_7kV38kWetEndVersion 7023
+#define R7KRECID_7kRawDetection 7027
+#define R7KRECID_7kSnippet 7028
 #define R7KRECID_7kVernierProcessingDataFiltered 7029
 #define R7KRECID_7kInstallationParameters 7030
 #define R7KRECID_7kBITESummary 7031
 #define R7KRECID_7kCompressedBeamformedMagnitude 7041
 #define R7KRECID_7kCompressedWaterColumn 7042
 #define R7KRECID_7kSegmentedRawDetection 7047
-#define R7KRECID_7kCalibratedBeamData 7048
+#define R7KRECID_7kCalibratedBeam 7048
 #define R7KRECID_7kSystemEvents 7050
 #define R7KRECID_7kSystemEventMessage 7051
 #define R7KRECID_7kRDRRecordingStatus 7052
@@ -210,26 +210,26 @@
 #define R7KHDRSIZE_7kMatchFilter 88
 #define R7KHDRSIZE_7kFirmwareHardwareConfiguration 8
 #define R7KHDRSIZE_7kBeamGeometry 12
-#define R7KHDRSIZE_7kBathymetricData 24
-#define R7KHDRSIZE_7kSideScanData 64
-#define R7KHDRSIZE_7kWaterColumnData 30
-#define R7KHDRSIZE_7kTVGData 50
-#define R7KHDRSIZE_7kImageData 56
-#define R7KHDRSIZE_7kPingMotionData 44
+#define R7KHDRSIZE_7kBathymetric 24
+#define R7KHDRSIZE_7kSideScan 64
+#define R7KHDRSIZE_7kWaterColumn 30
+#define R7KHDRSIZE_7kTVG 50
+#define R7KHDRSIZE_7kImage 56
+#define R7KHDRSIZE_7kPingMotion 44
 #define R7KHDRSIZE_7kAdaptiveGate 
 #define R7KHDRSIZE_7kDetectionDataSetup 116
 #define R7KRDTSIZE_7kDetectionDataSetup 30
-#define R7KHDRSIZE_7kBeamformedData 52
+#define R7KHDRSIZE_7kBeamformed 52
 #define R7KHDRSIZE_7kVernierProcessingDataRaw 92
-#define R7KHDRSIZE_7kBITEData 2
+#define R7KHDRSIZE_7kBITE 2
 #define R7KRDTSIZE_7kBITERecordData 130
 #define R7KRDTSIZE_7kBITEFieldData 79
-#define R7KHDRSIZE_7kSonarSourceVersion 32
-#define R7KHDRSIZE_7k8kWetEndVersion 32
-#define R7KHDRSIZE_7kRawDetectionData 99
-#define R7KRDTSIZE_7kRawDetectionData 34
-#define R7KHDRSIZE_7kSnippetData 46
-#define R7KRDTSIZE_7kSnippetDataseries 14
+#define R7KHDRSIZE_7kV37KSonarSourceVersion 32
+#define R7KHDRSIZE_7kV38kWetEndVersion 32
+#define R7KHDRSIZE_7kRawDetection 99
+#define R7KRDTSIZE_7kRawDetection 34
+#define R7KHDRSIZE_7kSnippet 46
+#define R7KRDTSIZE_7kSnippet 14
 #define R7KHDRSIZE_7kVernierProcessingDataFiltered 26
 #define R7KRDTSIZE_7kVernierProcessingDataFiltered 16
 #define R7KHDRSIZE_7kInstallationParameters 616
@@ -1044,7 +1044,7 @@ typedef struct s7kr_beamgeometry_struct {
 } s7kr_beamgeometry;
 
 /* Reson 7k bathymetry (record 7006) */
-typedef struct s7kr_bathymetrydata_struct {
+typedef struct s7kr_bathymetry_struct {
 	s7k_header header;
 	u64 serial_number;   /* Sonar serial number */
 	u32 ping_number;     /* Sequential number */
@@ -1116,10 +1116,10 @@ typedef struct s7kr_bathymetrydata_struct {
 	f32 acrosstrack[MBSYS_RESON7K_MAX_BEAMS];    /* Acrosstrack distance in meters */
 	f32 pointing_angle[MBSYS_RESON7K_MAX_BEAMS]; /* Pointing angle from vertical in radians */
 	f32 azimuth_angle[MBSYS_RESON7K_MAX_BEAMS];  /* Azimuth angle in radians */
-} s7kr_bathymetrydata;
+} s7kr_bathymetry;
 
 /* Reson 7k Side Scan Data (record 7007) */
-typedef struct s7kr_sidescandata_struct {
+typedef struct s7kr_sidescan_struct {
 	s7k_header header;
 	u64 serial_number;     /* Sonar serial number */
 	u32 ping_number;       /* Sequential number */
@@ -1158,7 +1158,7 @@ typedef struct s7kr_sidescandata_struct {
 	                             in radians */
 	f32 altitude;          /* Altitude in meters for slant range correction */
 	f32 depth;             /* Nadir depth for slant range correction in meters */
-} s7kr_sidescandata;
+} s7kr_sidescan;
 
 /* Reson 7k Generic Water Column data (part of record 7008)*/
 typedef struct s7k_wcd_struct {
@@ -1170,7 +1170,7 @@ typedef struct s7k_wcd_struct {
 } s7k_wcd;
 
 /* Reson 7k Generic Water Column data (record 7008) */
-typedef struct s7kr_watercolumndata_struct {
+typedef struct s7kr_watercolumn_struct {
 	s7k_header header;
 	u64 serial_number;   /* Sonar serial number */
 	u32 ping_number;     /* Sequential number */
@@ -1224,7 +1224,7 @@ typedef struct s7kr_watercolumndata_struct {
 	                        west negative */
 	f32 heading;         /* Heading of vessel at transmit time in radians */
 	f32 depth;           /* Nadir depth for slant range correction in meters */
-} s7kr_watercolumndata;
+} s7kr_watercolumn;
 
 /* Reson 7k tvg data (record 7010) */
 typedef struct s7kr_tvg_struct {
@@ -1241,7 +1241,7 @@ typedef struct s7kr_tvg_struct {
 } s7kr_tvg;
 
 /* Reson 7k image data (record 7011) */
-typedef struct s7kr_imagedata_struct {
+typedef struct s7kr_image_struct {
 	s7k_header header;
 	u32 ping_number;         /* Sequential number */
 	u16 multi_ping;          /* Flag to indicate multi-ping mode
@@ -1260,10 +1260,10 @@ typedef struct s7kr_imagedata_struct {
 	u32 reserved[6];         /* Reserved record */
 	u32 nalloc;              /* Number of bytes allocated to image array */
 	void *image;             /* Array of image data */
-} s7kr_imagedata;
+} s7kr_image;
 
 /* Reson 7k Ping Motion (record 7012) */
-typedef struct s7kr_pingmotiondata_struct {
+typedef struct s7kr_pingmotion_struct {
 	s7k_header header;
 	u64 serial_number;          /* Sonar serial number */
 	u32 ping_number;            /* Sequential number */
@@ -1292,7 +1292,7 @@ typedef struct s7kr_pingmotiondata_struct {
 	f32 *roll;                  /* Roll (radians) */
 	f32 *heading;               /* Heading (radians) */
 	f32 *heave;                 /* Heave (m) */
-} s7kr_pingmotiondata;
+} s7kr_pingmotion;
 
 /* Reson 7k Adaptive Gate (record 7014) */
 typedef struct s7kr_adaptivegate_struct {
@@ -1312,7 +1312,7 @@ typedef struct s7kr_adaptivegate_struct {
 } s7kr_adaptivegate;
 
 /* Reson 7k Detection Setup (record 7017) */
-typedef struct s7kr_detectiondatasetup_struct {
+typedef struct s7kr_detectionsetup_struct {
 	s7k_header header;
 	u64 serial_number;       /* Sonar serial number */
 	u32 ping_number;         /* Sequential number */
@@ -1388,7 +1388,7 @@ typedef struct s7kr_detectiondatasetup_struct {
 	f32 uncertainty[MBSYS_RESON7K_MAX_BEAMS];
 	                                      /* Detection uncertainty represented as an error 
 	                                         normalized to the detection point */
-} s7kr_detectiondatasetup;
+} s7kr_detectionsetup;
 
 /* Reson 7k amplitude and phase data (part of record 7018) */
 typedef struct s7kr_amplitudephase_struct {
@@ -1400,7 +1400,7 @@ typedef struct s7kr_amplitudephase_struct {
 } s7kr_amplitudephase;
 
 /* Reson 7k Beamformed Data (record 7018) */
-typedef struct s7kr_beamformeddata_struct {
+typedef struct s7kr_beamformed_struct {
 	s7k_header header;
 	u64 serial_number;   /* Sonar serial number */
 	u32 ping_number;     /* Sequential number */
@@ -1412,7 +1412,7 @@ typedef struct s7kr_beamformeddata_struct {
 	u32 reserved[8];     /* Reserved for future use */
 	s7k_amplitudephase amplitudephase[MBSYS_RESON7K_MAX_BEAMS];
 	                     /* amplitude and phase data for each beam */
-} s7kr_beamformeddata;
+} s7kr_beamformed;
 
 /* Reson 7k angle and magnitude data (part of record 7019) */
 typedef struct s7kr_anglemagnitude_struct {
@@ -1539,24 +1539,24 @@ typedef struct s7kr_bitereport_struct {
 } s7kr_bitereport;
 
 /* Reson 7k BITE (record 7021) */
-typedef struct s7kr_bitedata_struct {
+typedef struct s7kr_bite_struct {
 	s7k_header header;
 	u16 n;       /* Number of Built In Test Environment reports */
 	u32 nalloc;
 	s7kr_bitereport *reports;
-} s7kr_bitedata;
+} s7kr_bite;
 
 /* Reson 7k Sonar Source Version (Record 7022) */
-typedef struct s7kr_7ksonarsourceversion_struct {
+typedef struct s7kr_v37ksonarsourceversion_struct {
 	s7k_header header;
 	c8 version[32]; /* Null terminated ASCII string */
-} s7kr_7ksonarsourceversion;
+} s7kr_v37ksonarsourceversion;
 
 /* Reson 7k 8k wet end version (Record 7023) */
-typedef struct s7kr_8kwetendversion_struct {
+typedef struct s7kr_v38kwetendversion_struct {
 	s7k_header header;
 	c8 version[32]; /* Null terminated ASCII string */
-} s7kr_8kwetendversion;
+} s7kr_v38kwetendversion;
 
 /* Reson 7k raw detection data (part of Record 7027) */
 typedef struct s7kr_rawdetectiondata_struct {
@@ -1642,7 +1642,7 @@ typedef struct s7kr_snippetdataseries_struct {
 } s7kr_snippetdataseries;
 
 /* Reson 7k snippet data (record 7028) */
-typedef struct s7kr_snippetdata_struct {
+typedef struct s7kr_snippet_struct {
 	s7k_header header;
 	u64 serial_number; /* Sonar serial number */
 	u32 ping_number;   /* Sequential number */
@@ -1668,7 +1668,7 @@ typedef struct s7kr_snippetdata_struct {
 	u32 reserved[6];    /* Reserved for future use */
 	s7k_snippettimeseries snippettimeseries[MBSYS_RESON7K_MAX_BEAMS];
 	/* Snippet time series for each beam */
-} s7kr_snippetdata;
+} s7kr_snippet;
 
 /* Reson 7k vernier Processing Data Filtered (part of record 7029) */
 typedef struct s7kr_vernierprocessingdatasoundings_struct {
@@ -1795,8 +1795,8 @@ typedef struct s7kr_compressedbeamformedmagnitude_struct {
 	s7k_beamformedmagnitude beamformedmagnitude[MBSYS_RESON7K_MAX_BEAMS];
 } s7kr_compressedbeamformedmagnitude;
 
-/* Reson 7k Compressed Water Column Data (Record 7042) */
-typedef struct s7kr_compressedwatercolumn_struct {
+/* Reson 7k Compressed Water Column Data (part of Record 7042) */
+typedef struct s7kr_compressedwatercolumndata_struct {
 	s7k_header header;
 	u16 beam_number;    /* Beam Number for this data. */
 	u8 segment_number;  /* Segment number for this beam. Optional field, see ‘Bit 14’ of Flags. */
@@ -1866,21 +1866,59 @@ typedef struct s7kr_compressedwatercolumn_struct {
 	s7k_compressedwatercolumndata compressedwatercolumndata
 } s7kr_compressedwatercolumn;
 
-/* Reson 7k Segmented Raw Detection Data (Record 7047) */
+/* Reson 7k Segmented Raw Detection Data (part of Record 7047) */
 typedef struct s7kr_segmentedrawdetectiondata_struct {
 	s7k_header header;
-	
+	u16 
+	f32 
+	f32 
+	f32 
+	u32 
+	f32 
+	f32 
+	f32 
+	f32 
+	u32 
+	f32 
+	f32 
+	f32 
+	u8 
+	u32 
+	f32 
+	u8 
+	f32 
+	u16 
+	u16 
+	f32 
+	f32 
+	u32 
+	u32 
+	f32 
+	f32 
+	f32 
 } s7kr_segmentedrawdetectiondata;
 
 /* Reson 7k Segmented Raw Detection Data (Record 7047) */
 typedef struct s7kr_segmentedrawdetection_struct {
 	s7k_header header;
-	
+	u16 record_header_size;  /* Size of record header in bytes */
+	u32 n_segments;          /* Number of Segment descriptors */
+	u16 segment_field_size;  /* Size of transmitter descriptor block in bytes */
+	u32 n_rx;                /* Number of Rx detection points */
+	u16 rx_field_size;       /* Size of detection information block in bytes */
+	u64 serial_number;       /* Sonar serial number */
+	u32 ping_number;         /* Sequential number */
+	u16 multi_ping;          /* Flag to indicate multi-ping mode
+	                            0 = no multi-ping
+	                           >0 = sequence number of ping in the multi-ping sequence */
+	f32 sound_velocity;      /* Sound velocity at the transducer in meters/second */
+	f32 rx_delay;            /* Delay between start of first Tx pulse and start of sample 
+	                            data recoding in fractional samples. */
 	s7k_segmentedrawdetectiondata segmentedrawdetectiondata;
 } s7kr_segmentedrawdetection;
 
 /* Reson 7k Calibrated Beam Data (Record 7048) */
-typedef struct s7kr_calibratedbeamdata_struct {
+typedef struct s7kr_calibratedbeam_struct {
 	s7k_header header;
 	u64 serial_number;        /* Sonar serial number */
 	u32 ping_number;          /* Sequential number */
@@ -1907,9 +1945,9 @@ typedef struct s7kr_calibratedbeamdata_struct {
 	u32 reserved[8];          /* Reserved for future use */
 	f32 *sample;              /* Amplitude series for each beam. First sample represents
 	                             range 0 meters */
-} s7kr_calibratedbeamdata;
+} s7kr_calibratedbeam;
 
-/* Reson 7k System Events (Record 7050) */
+/* Reson 7k System Events (part of Record 7050) */
 typedef struct s7kr_systemeventsdata_struct {
 	s7k_header header;
 	u16 event_type;
@@ -2850,7 +2888,7 @@ struct mbsys_reson7k_struct {
 	int read_beamgeometry;
 	int read_remotecontrolsettings;
 	int read_bathymetry;
-	int read_backscatter;
+	int read_sidescan;
 	int read_beam;
 	int read_verticaldepth;
 	int read_tvg;
@@ -2920,23 +2958,17 @@ struct mbsys_reson7k_struct {
 	/* Attitude (record 1016) */
 	s7kr_attitude attitude;
 
-	/* Unknown record 1022 (record 1022) */
-	s7kr_rec1022 rec1022;
+	/* Pan Tilt (record 1017) */
+	s7kr_pantilt pantilt;
 
-	/* Edgetech FS-DW low frequency sidescan (record 3000) */
-	s7kr_fsdwss fsdwsslo;
+	/* Sonar Installation Identifiers (record 1020) */
+	s7kr_sonarinstallationids sonarinstallationids;
 
-	/* Edgetech FS-DW high frequency sidescan (record 3000) */
-	s7kr_fsdwss fsdwsshi;
+	/* Sonar Pipe Environment (record 2004) */
+	s7kr_sonarpipeenvironment sonarpipeenvironment;
 
-	/* Edgetech FS-DW subbottom (record 3001) */
-	s7kr_fsdwsb fsdwsb;
-
-	/* Bluefin data frames (record 3100) */
-	s7kr_bluefin bluefin;
-
-	/* Processed sidescan - MB-System extension to 7k format (record 3199) */
-	s7kr_processedsidescan processedsidescan;
+	/* Contact Output (record 3001) */
+	s7kr_contactoutput contactoutput;
 
 	/* Reson 7k volatile sonar settings (record 7000) */
 	s7kr_volatilesettings volatilesettings;
@@ -2948,25 +2980,19 @@ struct mbsys_reson7k_struct {
 	s7kr_matchfilter matchfilter;
 
 	/* Reson 7k firmware and hardware configuration (record 7003) */
-	s7kr_v2firmwarehardwareconfiguration v2firmwarehardwareconfiguration;
+	s7kr_firmwarehardwareconfiguration firmwarehardwareconfiguration;
 
 	/* Reson 7k beam geometry (record 7004) */
 	s7kr_beamgeometry beamgeometry;
 
-	/* Reson 7k calibration (record 7005) */
-	s7kr_calibration calibration;
-
 	/* Reson 7k bathymetry (record 7006) */
 	s7kr_bathymetry bathymetry;
 
-	/* Reson 7k backscatter imagery data (record 7007) */
-	s7kr_backscatter backscatter;
-
-	/* Reson 7k beam data (record 7008) */
-	s7kr_beam beam;
-
-	/* Reson 7k vertical depth (record 7009) */
-	s7kr_verticaldepth verticaldepth;
+	/* Reson 7k Side Scan Data (record 7007) */
+	s7kr_sidescan sidescan;
+	
+	/* Reson 7k Generic Water Column data (record 7008) */
+	s7kr_watercolumn s7kr_watercolumn;
 
 	/* Reson 7k tvg data (record 7011) */
 	s7kr_tvg tvg;
@@ -2975,55 +3001,112 @@ struct mbsys_reson7k_struct {
 	s7kr_image image;
 
 	/* Ping motion (record 7012) */
-	s7kr_v2pingmotion v2pingmotion;
+	s7kr_pingmotion pingmotion;
+
+	/* Reson 7k Adaptive Gate (record 7014) */
+	s7kr_adaptivegate adaptivegate;
 
 	/* Detection setup (record 7017) */
-	s7kr_v2detectionsetup v2detectionsetup;
+	s7kr_detectionsetup detectionsetup;
 
-	/* Reson 7k beamformed magnitude and phase data (record 7018) */
-	s7kr_v2beamformed v2beamformed;
+	/* Reson 7k Beamformed Data (record 7018) */
+	s7kr_beamformed beamformed;
+
+	/* Reson 7k Vernier Processing Data Raw (record 7019) */
+	s7kr_vernierprocessingdataraw vernierprocessingdataraw;
 
 	/* Reson 7k BITE (record 7021) */
-	s7kr_v2bite v2bite;
+	s7kr_bite bite;
 
 	/* Reson 7k center version (record 7022) */
-	s7kr_v27kcenterversion v27kcenterversion;
+	s7kr_v37kcentersourceversion v37kcentersourceversion;
 
 	/* Reson 7k 8k wet end version (record 7023) */
-	s7kr_v28kwetendversion v28kwetendversion;
+	s7kr_v38kwetendversion v38kwetendversion;
 
-	/* Reson 7k version 2 detection (record 7026) */
-	s7kr_v2detection v2detection;
+	/* Reson 7k raw detection (record 7027) */
+	s7kr_rawdetection rawdetection;
 
-	/* Reson 7k version 2 raw detection (record 7027) */
-	s7kr_v2rawdetection v2rawdetection;
+	/* Reson 7k snippet (record 7028) */
+	s7kr_snippet snippet;
 
-	/* Reson 7k version 2 snippet (record 7028) */
-	s7kr_v2snippet v2snippet;
+	/* Reson 7k vernier Processing Data Filtered (Record 7029) */
+	s7kr_vernierprocessingdatafiltered vernierprocessingdatafiltered;
 
 	/* Reson 7k sonar installation parameters (record 7030) */
 	s7kr_installation installation;
 
+	/* Reson 7k BITE summary (Record 7031) */
+	s7kr_bitesummary bitesummary;
+
+	/* Reson 7k Compressed Beamformed Magnitude Data (Record 7041) */
+	s7kr_compressedbeamformedmagnitude compressedbeamformedmagnitude;
+
+	/* Reson 7k Compressed Water Column Data (Record 7042) */
+	s7kr_compressedwatercolumn compressedwatercolumn;
+
+	/* Reson 7k Segmented Raw Detection Data (Record 7047) */
+	s7kr_segmentedrawdetection segmentedrawdetection;
+
+	/* Reson 7k Calibrated Beam Data (Record 7048) */
+	s7kr_calibratedbeam calibratedbeam;
+
+	/* Reson 7k System Events (part of Record 7050) */
+	s7kr_systemeventsdata systemeventsdata;
+
 	/* Reson 7k system event (record 7051) */
 	s7kr_systemeventmessage systemeventmessage;
 
-	/* Reson 7k calibrated snippet (record 7058) */
-	s7kr_calibratedsnippet calibratedsnippet;
+	/* Reson 7k RDR Recording Status (Record 7052) */
+	s7kr_rdrrecordingstatus rdrrecordingstatus;
+
+	/* Reson 7k Subscriptions (part of Record 7053) */
+	s7kr_subscriptions subscriptions;
+
+	/* Reson 7k System Events (Record 7054) */
+	s7kr_rdrstoragerecording rdrstoragerecording;
+
+	/* Reson 7k Calibration Status (Record 7055) */
+	s7kr_calibrationstatus calibrationstatus;
+
+	/* Reson 7k Calibrated Sidescan Data (record 7057) */
+	s7kr_calibratedsidescan calibratedsidescan;
+
+	/* Reson 7k Snippet Backscattering Strength (Record 7058) */
+	s7kr_snippetbackscatteringstrength snippetbackscatteringstrength;
+
+	/* Reson 7k MB2 Specific Status (Record 7059) */
+	s7kr_mb2status mb2status;
 
 	/* Reson 7k file header (record 7200) */
 	s7kr_fileheader fileheader;
 
+	/* Reson 7k File Catalog Record (Record 7300) */
+	s7kr_filecatalogrecord filecatalogrecord;
+
+	/* Reson 7k Time Message (Record 7400) */
+	s7kr_timemessage timemessage;
+
+	/* Reson 7k Remote Control (Record 7500) */
+	s7kr_remotecontrol remotecontrol;
+
+	/* Reson 7k Remote Control Acknowledge (Record 7501) */
+	s7kr_remotecontrolacknowledge remotecontrolacknowledge;
+
+	/* Reson 7k Remote Control Not Acknowledge (Record 7502) */
+	s7kr_remotecontrolnotacknowledge remotecontrolnotacknowledge;
+
 	/* Reson 7k remote control sonar settings (record 7503) */
 	s7kr_remotecontrolsettings remotecontrolsettings;
 
-	/* Reson 7k Reserved (well, unknown really...) (record 7504) */
-	s7kr_reserved reserved;
+	/* Reson 7k Common System Settings (Record 7504) */
+	s7kr_commonsystemsettings commonsystemsettings;
 
-	/* Reson 7k Roll (record 7600) */
-	s7kr_roll roll;
+	/* Reson 7k SV Filtering (record 7510) */
+	s7kr_svfiltering svfiltering;
 
-	/* Reson 7k Pitch (record 7601) */
-	s7kr_pitch pitch;
+	/* Reson 7k System Lock Status (record 7511) */
+	s7kr_systemlockstatus systemlockstatus;
 
 	/* Reson 7k Sound Velocity (record 7610) */
 	s7kr_soundvelocity soundvelocity;
@@ -3054,43 +3137,56 @@ struct mbsys_reson7k_struct {
 	int nrec_surveyline;
 	int nrec_navigation;
 	int nrec_attitude;
-	int nrec_rec1022;
-	int nrec_fsdwsslo;
-	int nrec_fsdwsshi;
-	int nrec_fsdwsb;
-	int nrec_bluefinnav;
-	int nrec_bluefinenv;
-	int nrec_multibeam;
+	int nrec_pantilt;
+	int nrec_sonarinstallationids;
+	int nrec_sonarpipeenvironment;
+	int nrec_contactoutput;
 	int nrec_volatilesonarsettings;
 	int nrec_configuration;
 	int nrec_matchfilter;
 	int nrec_beamgeometry;
-	int nrec_v2firmwarehardwareconfiguration;
-	int nrec_calibration;
+	int nrec_firmwarehardwareconfiguration;
+	int nrec_beamgeometry;
 	int nrec_bathymetry;
-	int nrec_backscatter;
-	int nrec_beam;
-	int nrec_verticaldepth;
+	int nrec_sidescan;
+	int nrec_watercolumn;
 	int nrec_tvg;
 	int nrec_image;
-	int nrec_v2pingmotion;
-	int nrec_v2detectionsetup;
-	int nrec_v2beamformed;
-	int nrec_v2bite;
-	int nrec_v27kcenterversion;
-	int nrec_v28kwetendversion;
-	int nrec_v2detection;
-	int nrec_v2rawdetection;
-	int nrec_v2snippet;
-	int nrec_calibratedsnippet;
-	int nrec_processedsidescan;
+	int nrec_pingmotion;
+	int nrec_adaptivegate;
+	int nrec_detectionsetup;
+	int nrec_beamformed;
+	int nrec_vernierprocessingdataraw;
+	int nrec_bite;
+	int nrec_v37kcentersourceversion;
+	int nrec_v38kwetendversion;
+	int nrec_rawdetection;
+	int nrec_snippet;
+	int nrec_vernierprocessingdatafiltered;
 	int nrec_installation;
+	int nrec_bitesummary;
+	int nrec_compressedbeamformedmagnitude;
+	int nrec_compressedwatercolumn;
+	int nrec_segmentedrawdetection;
+	int nrec_calibratedbeam;
 	int nrec_systemeventmessage;
+	int nrec_rdrrecordingstatus;
+	int nrec_subscriptions;
+	int nrec_rdrstoragerecording;
+	int nrec_calibrationstatus;
+	int nrec_calibratedsidescan;
+	int nrec_snippetbackscatteringstrength;
+	int nrec_mb2status;
 	int nrec_fileheader;
+	int nrec_filecatalogrecord;
+	int nrec_timemessage;
+	int nrec_remotecontrol;
+	int nrec_remotecontrolacknowledge;
+	int nrec_remotecontrolnotacknowledge;
 	int nrec_remotecontrolsettings;
-	int nrec_reserved;
-	int nrec_roll;
-	int nrec_pitch;
+	int nrec_commonsystemsettings;
+	int nrec_svfiltering;
+	int nrec_systemlockstatus;
 	int nrec_soundvelocity;
 	int nrec_absorptionloss;
 	int nrec_spreadingloss;
@@ -3192,33 +3288,48 @@ int mbsys_reson7k_print_firmwarehardwareconfiguration(int verbose,
                                                         int *error);
 int mbsys_reson7k_print_beamgeometry(int verbose, s7kr_beamgeometry *beamgeometry, int *error);
 int mbsys_reson7k_print_bathymetry(int verbose, s7kr_bathymetry *bathymetry, int *error);
-int mbsys_reson7k_print_sidescandata(int verbose, s7kr_sidescandata *sidescandata, int *error);
-int mbsys_reson7k_print_watercolumndata(int verbose, s7kr_watercolumndata *watercolumndata, int *error);
+int mbsys_reson7k_print_sidescan(int verbose, s7kr_sidescan *sidescan, int *error);
+int mbsys_reson7k_print_watercolumn(int verbose, s7kr_watercolumn *watercolumn, int *error);
 int mbsys_reson7k_print_tvg(int verbose, s7kr_tvg *tvg, int *error);
-int mbsys_reson7k_print_imagedata(int verbose, s7kr_imagedata *imagedata, int *error);
-int mbsys_reson7k_print_pingmotiondata(int verbose, s7kr_pingmotiondata *pingmotiondata, int *error);
+int mbsys_reson7k_print_image(int verbose, s7kr_image *image, int *error);
+int mbsys_reson7k_print_pingmotion(int verbose, s7kr_pingmotion *pingmotion, int *error);
 int mbsys_reson7k_print_adaptivegate(int verbose, s7kr_adaptivegate *adaptivegate, int *error);
 int mbsys_reson7k_print_detectionsetup(int verbose, s7kr_detectionsetup *detectionsetup, int *error);
 int mbsys_reson7k_print_amplitudephase(int verbose, s7kr_amplitudephase *amplitudephase, int *error);
-int mbsys_reson7k_print_beamformeddata(int verbose, s7kr_beamformeddata *beamformeddata, int *error);
+int mbsys_reson7k_print_beamformed(int verbose, s7kr_beamformed *beamformed, int *error);
 int mbsys_reson7k_print_anglemagnitude(int verbose, s7kr_anglemagnitude *anglemagnitude, int *error);
 int mbsys_reson7k_print_vernierprocessingdataraw(int verbose, 
-                                                        s7kr_vernierprocessingdataraw *vernierprocessingdataraw, 
-                                                        int *error);
+                                                      s7kr_vernierprocessingdataraw *vernierprocessingdataraw, 
+                                                      int *error);
 int mbsys_reson7k_print_bitefield(int verbose, s7kr_bitefield *bitefield, int *error);
 int mbsys_reson7k_print_bitereport(int verbose, s7kr_bitereport *bitereport, int *error);
-int mbsys_reson7k_print_bitedata(int verbose, s7kr_bitedata *bitedata, int *error);
-int mbsys_reson7k_print_7ksonarsourceversion(int verbose, s7kr_7ksonarsourceversion *7ksonarsourceversion, 
-                                                        int *error);
-int mbsys_reson7k_print_8kwetendversion(int verbose, s7kr_8kwetendversion *8kwetendversion, int *error);
+int mbsys_reson7k_print_bite(int verbose, s7kr_bite *bite, int *error);
+int mbsys_reson7k_print_v37ksonarsourceversion(int verbose, s7kr_v37ksonarsourceversion *v37ksonarsourceversion, 
+                                                      int *error);
+int mbsys_reson7k_print_v38kwetendversion(int verbose, s7kr_v38kwetendversion *v38kwetendversion, int *error);
 int mbsys_reson7k_print_rawdetection(int verbose, s7kr_rawdetection *rawdetection, int *error);
-int mbsys_reson7k_print_snippetdata(int verbose, s7kr_snippetdata *snippetdata, int *error);
-int mbsys_reson7k_print_calibratedsnippet(int verbose, s7kr_calibratedsnippet *calsnippet, int *error);
-
-int mbsys_reson7k_print_tvg(int verbose, s7kr_tvg *tvg, int *error);
-int mbsys_reson7k_print_tvg(int verbose, s7kr_tvg *tvg, int *error);
-int mbsys_reson7k_print_tvg(int verbose, s7kr_tvg *tvg, int *error);
-
+int mbsys_reson7k_print_snippet(int verbose, s7kr_snippet *snippet, int *error);
+int mbsys_reson7k_print_vernierprocessingdatafiltered(int verbose, 
+                                                      s7kr_vernierprocessingdatafiltered *vernierprocessingdatafiltered, 
+                                                      int *error);
+int mbsys_reson7k_print_installation(int verbose, s7kr_installation *installation, int *error);
+int mbsys_reson7k_print_bitesummary(int verbose, s7kr_bitesummary *bitesummary, int *error);
+int mbsys_reson7k_print_compressedbeamformedmagnitude(int verbose, 
+                                                      s7kr_compressedbeamformedmagnitude *compressedbeamformedmagnitude, 
+                                                      int *error);
+int mbsys_reson7k_print_compressedwatercolumn(int verbose, s7kr_compressedwatercolumn *compressedwatercolumn, 
+                                                  int *error);
+int mbsys_reson7k_print_segmentedrawdetection(int verbose, s7kr_segmentedrawdetection *segmentedrawdetection, 
+                                                  int *error);
+int mbsys_reson7k_print_calibratedbeamdata(int verbose, s7kr_calibratedbeamdata *calibratedbeamdata, int *error);
+int mbsys_reson7k_print_systemevents(int verbose, s7kr_systemevents *systemevents, int *error);
+int mbsys_reson7k_print_systemeventmessage(int verbose, s7kr_systemeventmessage *systemeventmessage, int *error);
+int mbsys_reson7k_print_rdrrecordingstatus(int verbose, s7kr_rdrrecordingstatus *rdrrecordingstatus, int *error);
+int mbsys_reson7k_print_subscriptions(int verbose, s7kr_subscriptions *subscriptions, int *error);
+int mbsys_reson7k_print_rdrstoragerecording(int verbose, s7kr_tvg *tvg, int *error);
+int mbsys_reson7k_print_calibrationstatus(int verbose, s7kr_calibrationstatus *calibrationstatus, int *error);
+int mbsys_reson7k_print_calibratedsidescan(int verbose, s7kr_calibratedsidescan *calibratedsidescan, 
+                                                        int *error);
 int mbsys_reson7k_print_snippetbackscatteringstrength(int verbose, 
                                                      s7kr_snippetbackscatteringstrength *snippetbackscatteringstrength, 
                                                      int *error);
